@@ -36,11 +36,13 @@ public class WebCrawlerTask implements Runnable {
 
     @Override
     public void run() {
+        db.removeFromQueue(startUri);
+        if (db.hasVisited(startUri)) return;
+        db.markAsVisited(startUri);
+        
         try {
             // Remove the URI from the task queue stored in DB
-            db.removeFromQueue(startUri);
             // Don't crawl same page twice
-            if (db.hasVisited(startUri)) return;
             // Send an HTTP GET to the server and get the input stream for the content
             HttpResponse response = httpClient.execute(new HttpGet(startUri));
             InputStream in = response.getEntity().getContent();
@@ -81,9 +83,6 @@ public class WebCrawlerTask implements Runnable {
             }
         } catch (Exception ex) {
             System.err.println(ex.getMessage());
-        } finally {
-            // Always mark the page as visited, even if it makes the crawler crash
-            db.markAsVisited(startUri);
         }
     }
 }
