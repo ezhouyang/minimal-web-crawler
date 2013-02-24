@@ -1,0 +1,9 @@
+Minimal web crawler written in Java
+
+Requires Java SE 7 and Maven
+
+How to compile:
+mvn package
+
+How to run:
+mvn exec:java
